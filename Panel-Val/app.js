@@ -65,6 +65,7 @@ async function loadUsers() {
 // ==========================================
 async function addUser() {
     const username = searchInput.value.trim();
+    const selectedRole = rankInput.value; // ¡Aquí atrapamos el rango!
 
     if (username === '') {
         alert("¡Debes escribir un nombre de usuario!");
@@ -79,7 +80,7 @@ async function addUser() {
             headers: headers,
             body: JSON.stringify({
                 username: username,
-                role: 'ELITE',
+                role: selectedRole, // Enviamos el rango que elegiste
                 status: 'Activo'
             })
         });
@@ -96,6 +97,7 @@ async function addUser() {
         addUserBtn.innerHTML = `AÑADIR USUARIO <span class="add-icon">👤+</span>`;
     }
 }
+
 
 // ==========================================
 // 4. FUNCIÓN PARA ELIMINAR USUARIO (¡NUEVO!)
