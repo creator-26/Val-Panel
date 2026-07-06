@@ -1,1 +1,311 @@
+/* =========================================
+   VARIABLES GLOBALES (Paleta de Colores)
+   ========================================= */
+:root {
+    --bg-main: #111111;         /* Fondo negro principal */
+    --bg-card: #1A1A1A;         /* Fondo de las tarjetas y buscador */
+    --cyan-neon: #00E5FF;       /* Azul/Cian brillante */
+    --purple-neon: #7B2CBF;     /* Morado brillante */
+    --text-white: #FFFFFF;      /* Texto principal */
+    --text-gray: #888888;       /* Texto secundario/apagado */
+    --border-dark: #2A2A2A;     /* Bordes sutiles */
+    --font-titles: 'Rajdhani', sans-serif;
+    --font-text: 'Roboto', sans-serif;
+}
+
+/* =========================================
+   RESET BÁSICO
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-white);
+    font-family: var(--font-text);
+    padding-bottom: 80px; /* Espacio para que el menú no tape el contenido */
+}
+
+/* =========================================
+   ENCABEZADO (Header)
+   ========================================= */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #141414;
+    border-bottom: 1px solid var(--border-dark);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo h1 {
+    font-family: var(--font-titles);
+    font-size: 24px;
+    letter-spacing: 1.5px;
+    color: #E0F7FA;
+}
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   ========================================= */
+.container {
+    padding: 20px;
+}
+
+/* Títulos */
+.subtitle {
+    color: var(--text-gray);
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 2px;
+}
+
+.titles h2 {
+    font-family: var(--font-titles);
+    font-size: 34px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+/* Buscador */
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-dark);
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    width: 100%;
+    margin-left: 10px;
+    font-size: 15px;
+    outline: none;
+}
+
+/* Botón Añadir (Cian Neón) */
+.btn-cyan {
+    width: 100%;
+    background-color: var(--cyan-neon);
+    color: #000;
+    border: none;
+    padding: 16px;
+    font-family: var(--font-titles);
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    transition: 0.2s;
+}
+
+.btn-cyan:active {
+    transform: scale(0.98);
+    opacity: 0.8;
+}
+
+/* =========================================
+   ESTADÍSTICAS (Grid)
+   ========================================= */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background-color: var(--bg-card);
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid var(--border-dark);
+}
+
+.stat-card p {
+    font-family: var(--font-titles);
+    color: var(--text-gray);
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.stat-card h3 {
+    font-family: var(--font-titles);
+    font-size: 36px;
+}
+
+/* Bordes de color para las estadísticas */
+.border-cyan { border-left: 4px solid var(--cyan-neon); }
+.border-cyan h3 { color: var(--cyan-neon); }
+
+.border-purple { border-left: 4px solid var(--purple-neon); }
+.border-purple h3 { color: #DDA0DD; }
+
+/* =========================================
+   LISTA DE USUARIOS
+   ========================================= */
+.section-title {
+    font-family: var(--font-titles);
+    color: var(--text-gray);
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+.users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Tarjeta individual */
+.user-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-card);
+    padding: 12px;
+    border: 1px solid var(--border-dark);
+    border-radius: 4px;
+}
+
+.border-left-cyan { border-left: 3px solid var(--cyan-neon); }
+.border-left-purple { border-left: 3px solid var(--purple-neon); }
+
+/* Avatar y Punto de Estado */
+.avatar {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    background-color: #333;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.status-dot {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid var(--bg-card);
+}
+
+.status-dot.green { background-color: #00FF33; }
+.status-dot.gray { background-color: #666; }
+
+/* Información del Jugador */
+.user-info {
+    flex-grow: 1;
+    margin-left: 15px;
+}
+
+.user-info h4 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+}
+
+.badge {
+    padding: 3px 6px;
+    border-radius: 2px;
+    font-family: var(--font-text);
+    font-weight: 700;
+}
+
+.badge.elite {
+    background-color: #2A2A2A;
+    color: var(--text-gray);
+    border: 1px solid #444;
+}
+
+.badge.veteran {
+    background-color: var(--purple-neon);
+    color: white;
+}
+
+.status-text {
+    color: var(--text-gray);
+}
+
+.menu-icon {
+    font-size: 24px;
+    color: var(--text-gray);
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+/* =========================================
+   MENÚ INFERIOR (Bottom Navigation)
+   ========================================= */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #0D0D0D;
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid var(--border-dark);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-gray);
+    font-size: 13px;
+    width: 25%;
+    padding: 12px 0;
+    cursor: pointer;
+}
+
+.nav-item .icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+/* Tab Activa (Morado) */
+.nav-item.active {
+    background-color: var(--purple-neon);
+    color: white;
+    border-top: 3px solid #E0B0FF;
+}
+
+.nav-item.active .icon {
+    color: white;
+}
 
