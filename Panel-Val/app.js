@@ -32,12 +32,24 @@ async function loadUsers() {
         usersContainer.innerHTML = '';
         totalCount.textContent = data.length;
 
+                // Dibujamos las tarjetas reales con los datos de Supabase
         data.forEach(user => {
-            const isElite = user.role === 'ELITE';
             const isActive = user.status === 'Activo';
+            
+            // Lógica de colores según el rango
+            let borderClass = 'border-left-purple'; // Por defecto MEMBER y VETERAN
+            let badgeClass = 'veteran';
+            
+            if (user.role === 'ELITE') {
+                borderClass = 'border-left-cyan';
+                badgeClass = 'elite';
+            } else if (user.role === 'SUPREMO') {
+                borderClass = 'border-left-gold';
+                badgeClass = 'supremo';
+            }
 
             const cardHtml = `
-                <div class="user-card ${isElite ? 'border-left-cyan' : 'border-left-purple'}">
+                <div class="user-card ${borderClass}">
                     <div class="avatar">
                         <img src="https://ui-avatars.com/api/?name=${user.username}&background=1A1A1A&color=00E5FF&bold=true" alt="Avatar">
                         <div class="status-dot ${isActive ? 'green' : 'gray'}"></div>
@@ -45,15 +57,17 @@ async function loadUsers() {
                     <div class="user-info">
                         <h4>${user.username}</h4>
                         <div class="badges">
-                            <span class="badge ${isElite ? 'elite' : 'veteran'}">${user.role || 'MEMBER'}</span>
+                            <span class="badge ${badgeClass}">${user.role || 'MEMBER'}</span>
                             <span class="status-text">Estado: ${user.status || 'Desconocido'}</span>
                         </div>
                     </div>
                     <div class="delete-btn" onclick="deleteUser('${user.username}')">🗑️</div>
                 </div>
             `;
+            // Inyectamos la tarjeta en la página
             usersContainer.innerHTML += cardHtml;
         });
+
 
     } catch (error) {
         console.error("Error al cargar los usuarios:", error);
