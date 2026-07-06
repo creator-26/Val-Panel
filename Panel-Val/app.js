@@ -29,12 +29,12 @@ async function loadUsers() {
             method: 'GET',
             headers: headers
         });
-        
+
         const data = await response.json();
-        
+
         // Limpiamos el contenedor (borramos el usuario de ejemplo)
         usersContainer.innerHTML = '';
-        
+
         // Actualizamos el contador total
         totalCount.textContent = data.length;
 
@@ -46,7 +46,7 @@ async function loadUsers() {
             const cardHtml = `
                 <div class="user-card ${isElite ? 'border-left-cyan' : 'border-left-purple'}">
                     <div class="avatar">
-                        <img src="https://tr.rbxcdn.com/38c6edcb50633730ff4cf39458e0c165/150/150/AvatarHeadshot/Png" alt="Avatar">
+                        <img src="https://ui-avatars.com/api/?name=${user.username}&background=1A1A1A&color=00E5FF&bold=true" alt="Avatar">
                         <div class="status-dot ${isActive ? 'green' : 'gray'}"></div>
                     </div>
                     <div class="user-info">
@@ -73,7 +73,7 @@ async function loadUsers() {
 // ==========================================
 async function addUser() {
     const username = searchInput.value.trim();
-    
+
     if (username === '') {
         alert("¡Debes escribir un nombre de usuario!");
         return;
@@ -116,3 +116,45 @@ addUserBtn.addEventListener('click', addUser);
 // Al entrar a la página, cargamos los usuarios automáticamente
 loadUsers();
 
+
+// ==========================================
+// 5. SISTEMA DE LOGIN Y SEGURIDAD
+// ==========================================
+const loginScreen = document.getElementById('loginScreen');
+const mainContent = document.getElementById('mainContent');
+const navMenu = document.getElementById('navMenu');
+const topHeader = document.getElementById('topHeader');
+const passInput = document.getElementById('passInput');
+const loginBtn = document.getElementById('loginBtn');
+
+// Función para desbloquear la pantalla
+function grantAccess() {
+    loginScreen.style.display = 'none';
+    mainContent.style.display = 'block';
+    navMenu.style.display = 'flex';
+    topHeader.style.display = 'flex';
+}
+
+// 1. Memoria temporal: Verifica si ya pusiste la clave en esta sesión
+if (sessionStorage.getItem('accesoClanVal') === 'concedido') {
+    grantAccess();
+}
+
+// 2. Comprobar la contraseña al presionar el botón
+loginBtn.addEventListener('click', () => {
+    // Aquí validamos tu contraseña secreta
+    if (passInput.value === 'wamputsag') {
+        sessionStorage.setItem('accesoClanVal', 'concedido'); // Guarda el pase VIP en memoria
+        grantAccess();
+    } else {
+        alert('❌ ACCESO DENEGADO: Contraseña incorrecta');
+        passInput.value = ''; // Borra lo que escribió para que intente de nuevo
+    }
+});
+
+// Extra: Permite iniciar sesión presionando "Enter" en el teclado
+passInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        loginBtn.click();
+    }
+});
