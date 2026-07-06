@@ -382,5 +382,45 @@ body {
     opacity: 1;
 }
 
+/* =========================================
+   SELECTOR DE RANGO
+   ========================================= */
+.rank-selector {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-dark);
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.rank-selector label {
+    color: var(--text-gray);
+    font-family: var(--font-titles);
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+}
+
+.rank-selector select {
+    background: transparent;
+    border: none;
+    color: var(--cyan-neon);
+    font-family: var(--font-titles);
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+}
+
+.rank-selector select option {
+    background-color: var(--bg-card);
+    color: var(--text-white);
+}
+
+
 
 
