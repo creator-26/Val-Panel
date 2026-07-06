@@ -423,6 +423,10 @@ body {
 /* Color exclusivo para el creador */
 .border-left-gold { border-left: 3px solid #FFD700; }
 .badge.supremo { background-color: #FFD700; color: #000; }
+/* Corrección de rangos independientes */
+.border-left-red { border-left: 3px solid #FF3333; } /* Borde rojo SOLO para Veteran */
+.badge.member { background-color: var(--purple-neon); color: white; } /* Medalla morada SOLO para Member */
+
 
 
 
