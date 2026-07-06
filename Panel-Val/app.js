@@ -2,10 +2,10 @@
 // 1. CONFIGURACIÓN DE SUPABASE (Tus Llaves)
 // ==========================================
 const SUPABASE_URL = "https://guqtnlnkbernezblabfs.supabase.co"; 
-const rankInput = document.getElementById('rankInput');
 const SUPABASE_KEY = "sb_publishable_OO9dKgyJmzVsm1MEvdNPoA_3ow1L0TP"; 
 
 const searchInput = document.getElementById('searchInput');
+const rankInput = document.getElementById('rankInput');
 const addUserBtn = document.getElementById('addUserBtn');
 const usersContainer = document.getElementById('usersContainer');
 const totalCount = document.getElementById('totalCount');
@@ -32,20 +32,22 @@ async function loadUsers() {
         usersContainer.innerHTML = '';
         totalCount.textContent = data.length;
 
-                // Dibujamos las tarjetas reales con los datos de Supabase
         data.forEach(user => {
             const isActive = user.status === 'Activo';
             
-            // Lógica de colores según el rango
-            let borderClass = 'border-left-purple'; // Por defecto MEMBER y VETERAN
-            let badgeClass = 'veteran';
+            // ASIGNACIÓN ESTRICTA DE COLORES POR RANGO (CORREGIDO)
+            let borderClass = 'border-left-purple'; // MEMBER por defecto es Morado
+            let badgeClass = 'member';             // Medalla Morada
             
-            if (user.role === 'ELITE') {
-                borderClass = 'border-left-cyan';
-                badgeClass = 'elite';
+            if (user.role === 'VETERAN') {
+                borderClass = 'border-left-red';   // VETERAN es Rojo
+                badgeClass = 'veteran';            // Medalla Roja
+            } else if (user.role === 'ELITE') {
+                borderClass = 'border-left-cyan';  // ELITE es Cian
+                badgeClass = 'elite';              // Medalla Gris
             } else if (user.role === 'SUPREMO') {
-                borderClass = 'border-left-gold';
-                badgeClass = 'supremo';
+                borderClass = 'border-left-gold';  // SUPREMO es Dorado
+                badgeClass = 'supremo';            // Medalla Dorada
             }
 
             const cardHtml = `
@@ -64,10 +66,8 @@ async function loadUsers() {
                     <div class="delete-btn" onclick="deleteUser('${user.username}')">🗑️</div>
                 </div>
             `;
-            // Inyectamos la tarjeta en la página
             usersContainer.innerHTML += cardHtml;
         });
-
 
     } catch (error) {
         console.error("Error al cargar los usuarios:", error);
@@ -79,7 +79,7 @@ async function loadUsers() {
 // ==========================================
 async function addUser() {
     const username = searchInput.value.trim();
-    const selectedRole = rankInput.value; // ¡Aquí atrapamos el rango!
+    const selectedRole = rankInput.value;
 
     if (username === '') {
         alert("¡Debes escribir un nombre de usuario!");
@@ -94,7 +94,7 @@ async function addUser() {
             headers: headers,
             body: JSON.stringify({
                 username: username,
-                role: selectedRole, // Enviamos el rango que elegiste
+                role: selectedRole,
                 status: 'Activo'
             })
         });
@@ -112,24 +112,20 @@ async function addUser() {
     }
 }
 
-
 // ==========================================
-// 4. FUNCIÓN PARA ELIMINAR USUARIO (¡NUEVO!)
+// 4. FUNCIÓN PARA ELIMINAR USUARIO
 // ==========================================
 async function deleteUser(username) {
-    // 1. Pedimos confirmación para no borrar por accidente
     const confirmar = confirm(`⚠️ ¿Estás seguro de que quieres eliminar a ${username} del Clan Val?`);
     
     if (confirmar) {
         try {
-            // 2. Le decimos a Supabase que borre la fila exacta de ese jugador
             const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${username}`, {
                 method: 'DELETE',
                 headers: headers
             });
 
             if (response.ok) {
-                // 3. Recargamos la lista visualmente
                 loadUsers();
             } else {
                 alert("Error al intentar eliminar el usuario.");
@@ -141,7 +137,7 @@ async function deleteUser(username) {
 }
 
 // ==========================================
-// 5. ACTIVADORES (Event Listeners)
+// 5. ACTIVADORES
 // ==========================================
 addUserBtn.addEventListener('click', addUser);
 loadUsers();
