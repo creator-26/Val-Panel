@@ -420,6 +420,10 @@ body {
     background-color: var(--bg-card);
     color: var(--text-white);
 }
+/* Color exclusivo para el creador */
+.border-left-gold { border-left: 3px solid #FFD700; }
+.badge.supremo { background-color: #FFD700; color: #000; }
+
 
 
 
