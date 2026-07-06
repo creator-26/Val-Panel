@@ -140,9 +140,9 @@ if (sessionStorage.getItem('accesoClanVal') === 'concedido') {
     grantAccess();
 }
 
-// 2. Comprobar la contraseña al presionar el botón
+
 loginBtn.addEventListener('click', () => {
-    // Aquí validamos tu contraseña secreta
+    
     if (passInput.value === 'wamputsag') {
         sessionStorage.setItem('accesoClanVal', 'concedido'); // Guarda el pase VIP en memoria
         grantAccess();
