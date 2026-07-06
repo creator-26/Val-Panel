@@ -4,14 +4,12 @@
 const SUPABASE_URL = "https://guqtnlnkbernezblabfs.supabase.co"; 
 const SUPABASE_KEY = "sb_publishable_OO9dKgyJmzVsm1MEvdNPoA_3ow1L0TP"; 
 
-// Referencias a los elementos de la página
 const searchInput = document.getElementById('searchInput');
 const addUserBtn = document.getElementById('addUserBtn');
 const usersContainer = document.getElementById('usersContainer');
 const totalCount = document.getElementById('totalCount');
 const pendingCount = document.getElementById('pendingCount');
 
-// Cabeceras estándar para hablar con Supabase
 const headers = {
     'apikey': SUPABASE_KEY,
     'Authorization': `Bearer ${SUPABASE_KEY}`,
@@ -24,21 +22,15 @@ const headers = {
 // ==========================================
 async function loadUsers() {
     try {
-        // Pedimos los datos a la tabla 'whitelist'
         const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?select=*`, {
             method: 'GET',
             headers: headers
         });
 
         const data = await response.json();
-
-        // Limpiamos el contenedor (borramos el usuario de ejemplo)
         usersContainer.innerHTML = '';
-
-        // Actualizamos el contador total
         totalCount.textContent = data.length;
 
-        // Dibujamos las tarjetas reales con los datos de Supabase
         data.forEach(user => {
             const isElite = user.role === 'ELITE';
             const isActive = user.status === 'Activo';
@@ -56,10 +48,9 @@ async function loadUsers() {
                             <span class="status-text">Estado: ${user.status || 'Desconocido'}</span>
                         </div>
                     </div>
-                    <div class="menu-icon">⋮</div>
+                    <div class="delete-btn" onclick="deleteUser('${user.username}')">🗑️</div>
                 </div>
             `;
-            // Inyectamos la tarjeta en la página
             usersContainer.innerHTML += cardHtml;
         });
 
@@ -79,7 +70,6 @@ async function addUser() {
         return;
     }
 
-    // Cambiamos el texto del botón temporalmente
     addUserBtn.innerHTML = `GUARDANDO... ⏳`;
 
     try {
@@ -88,37 +78,59 @@ async function addUser() {
             headers: headers,
             body: JSON.stringify({
                 username: username,
-                role: 'ELITE',      // Por defecto lo ponemos como Elite
-                status: 'Activo'    // Por defecto entra Activo
+                role: 'ELITE',
+                status: 'Activo'
             })
         });
 
         if (response.ok) {
-            searchInput.value = ''; // Limpiamos la barra de búsqueda
-            loadUsers();            // Recargamos la lista visualmente
+            searchInput.value = ''; 
+            loadUsers();            
         } else {
             alert("Hubo un error al guardar en la base de datos.");
         }
     } catch (error) {
         console.error("Error al guardar:", error);
     } finally {
-        // Devolvemos el botón a la normalidad
         addUserBtn.innerHTML = `AÑADIR USUARIO <span class="add-icon">👤+</span>`;
     }
 }
 
 // ==========================================
-// 4. ACTIVADORES (Event Listeners)
+// 4. FUNCIÓN PARA ELIMINAR USUARIO (¡NUEVO!)
 // ==========================================
-// Escuchamos el clic en el botón de añadir
-addUserBtn.addEventListener('click', addUser);
+async function deleteUser(username) {
+    // 1. Pedimos confirmación para no borrar por accidente
+    const confirmar = confirm(`⚠️ ¿Estás seguro de que quieres eliminar a ${username} del Clan Val?`);
+    
+    if (confirmar) {
+        try {
+            // 2. Le decimos a Supabase que borre la fila exacta de ese jugador
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${username}`, {
+                method: 'DELETE',
+                headers: headers
+            });
 
-// Al entrar a la página, cargamos los usuarios automáticamente
+            if (response.ok) {
+                // 3. Recargamos la lista visualmente
+                loadUsers();
+            } else {
+                alert("Error al intentar eliminar el usuario.");
+            }
+        } catch (error) {
+            console.error("Error al eliminar:", error);
+        }
+    }
+}
+
+// ==========================================
+// 5. ACTIVADORES (Event Listeners)
+// ==========================================
+addUserBtn.addEventListener('click', addUser);
 loadUsers();
 
-
 // ==========================================
-// 5. SISTEMA DE LOGIN Y SEGURIDAD
+// 6. SISTEMA DE LOGIN Y SEGURIDAD
 // ==========================================
 const loginScreen = document.getElementById('loginScreen');
 const mainContent = document.getElementById('mainContent');
@@ -127,7 +139,6 @@ const topHeader = document.getElementById('topHeader');
 const passInput = document.getElementById('passInput');
 const loginBtn = document.getElementById('loginBtn');
 
-// Función para desbloquear la pantalla
 function grantAccess() {
     loginScreen.style.display = 'none';
     mainContent.style.display = 'block';
@@ -135,24 +146,20 @@ function grantAccess() {
     topHeader.style.display = 'flex';
 }
 
-// 1. Memoria temporal: Verifica si ya pusiste la clave en esta sesión
 if (sessionStorage.getItem('accesoClanVal') === 'concedido') {
     grantAccess();
 }
 
-
 loginBtn.addEventListener('click', () => {
-    
     if (passInput.value === 'wamputsag') {
-        sessionStorage.setItem('accesoClanVal', 'concedido'); // Guarda el pase VIP en memoria
+        sessionStorage.setItem('accesoClanVal', 'concedido');
         grantAccess();
     } else {
         alert('❌ ACCESO DENEGADO: Contraseña incorrecta');
-        passInput.value = ''; // Borra lo que escribió para que intente de nuevo
+        passInput.value = '';
     }
 });
 
-// Extra: Permite iniciar sesión presionando "Enter" en el teclado
 passInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         loginBtn.click();
