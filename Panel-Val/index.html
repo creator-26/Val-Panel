@@ -1,1 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Val Clan - Protocolo de Seguridad</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fuentes para el estilo tecnológico -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Encabezado Superior -->
+    <header class="top-header">
+        <div class="logo">
+            <span class="shield-icon">🛡️</span>
+            <h1>VAL CLAN</h1>
+        </div>
+        <div class="profile-icon">👤</div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container">
+        
+        <!-- Títulos -->
+        <div class="titles">
+            <p class="subtitle">ELITE PROTOCOL</p>
+            <h2>Gestión de Whitelist</h2>
+        </div>
+
+        <!-- Buscador -->
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Buscar usuario...">
+        </div>
+
+        <!-- Botón Añadir -->
+        <button id="addUserBtn" class="btn-cyan">
+            AÑADIR USUARIO <span class="add-icon">👤+</span>
+        </button>
+
+        <!-- Panel de Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card border-cyan">
+                <p>TOTAL MIEMBROS</p>
+                <h3 id="totalCount">0</h3>
+            </div>
+            <div class="stat-card border-purple">
+                <p>PENDIENTES</p>
+                <h3 id="pendingCount">0</h3>
+            </div>
+        </div>
+
+        <!-- Lista Dinámica de Usuarios -->
+        <div class="results-section">
+            <p class="section-title">RESULTADOS RECIENTES</p>
+            
+            <!-- Contenedor vacío: JavaScript inyectará las tarjetas aquí -->
+            <div id="usersContainer" class="users-list">
+                <!-- Ejemplo visual (se borrará al conectar la base de datos) -->
+                <div class="user-card border-left-cyan">
+                    <div class="avatar">
+                        <img src="https://tr.rbxcdn.com/38c6edcb50633730ff4cf39458e0c165/150/150/AvatarHeadshot/Png" alt="Avatar">
+                        <div class="status-dot green"></div>
+                    </div>
+                    <div class="user-info">
+                        <h4>Ejemplo_Jugador</h4>
+                        <div class="badges">
+                            <span class="badge elite">ELITE</span>
+                            <span class="status-text">Estado: Activo</span>
+                        </div>
+                    </div>
+                    <div class="menu-icon">⋮</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Menú Inferior (Navegación) -->
+    <nav class="bottom-nav">
+        <div class="nav-item">
+            <span class="icon">🎛️</span>
+            <p>Overview</p>
+        </div>
+        <div class="nav-item active">
+            <span class="icon">🛡️</span>
+            <p>Whitelist</p>
+        </div>
+        <div class="nav-item">
+            <span class="icon">👥</span>
+            <p>Members</p>
+        </div>
+        <div class="nav-item">
+            <span class="icon">🕒</span>
+            <p>Logs</p>
+        </div>
+    </nav>
+
+    <!-- Conexión a la lógica -->
+    <script src="app.js"></script>
+</body>
+</html>
 
