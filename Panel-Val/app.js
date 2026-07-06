@@ -2,6 +2,7 @@
 // 1. CONFIGURACIÓN DE SUPABASE (Tus Llaves)
 // ==========================================
 const SUPABASE_URL = "https://guqtnlnkbernezblabfs.supabase.co"; 
+const rankInput = document.getElementById('rankInput');
 const SUPABASE_KEY = "sb_publishable_OO9dKgyJmzVsm1MEvdNPoA_3ow1L0TP"; 
 
 const searchInput = document.getElementById('searchInput');
