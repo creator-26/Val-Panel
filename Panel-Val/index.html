@@ -39,11 +39,15 @@
             <input type="text" id="searchInput" placeholder="Buscar usuario...">
         </div>
 
-        <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Buscar usuario...">
+        <div class="rank-selector">
+            <label for="rankInput">RANGO:</label>
+            <select id="rankInput">
+                <option value="MEMBER">MEMBER</option>
+                <option value="VETERAN">VETERAN</option>
+                <option value="ELITE">ELITE</option>
+                <option value="SUPREMO" selected>SUPREMO 👑</option>
+            </select>
         </div>
-
 
         <button id="addUserBtn" class="btn-cyan">
             AÑADIR USUARIO <span class="add-icon">👤+</span>
@@ -64,21 +68,7 @@
             <p class="section-title">RESULTADOS RECIENTES</p>
 
             <div id="usersContainer" class="users-list">
-                <div class="user-card border-left-cyan">
-                    <div class="avatar">
-                        <img src="https://ui-avatars.com/api/?name=Ejemplo_Jugador&background=1A1A1A&color=00E5FF&bold=true" alt="Avatar">
-                        <div class="status-dot green"></div>
-                    </div>
-                    <div class="user-info">
-                        <h4>Ejemplo_Jugador</h4>
-                        <div class="badges">
-                            <span class="badge elite">ELITE</span>
-                            <span class="status-text">Estado: Activo</span>
-                        </div>
-                    </div>
-                    <div class="menu-icon">⋮</div>
                 </div>
-            </div>
         </div>
 
     </main>
