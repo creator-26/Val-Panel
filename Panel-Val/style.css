@@ -252,7 +252,7 @@ body {
 }
 
 .badge.veteran {
-    background-color: var(--purple-neon);
+    background-color: #FF3333;
     color: white;
 }
 
