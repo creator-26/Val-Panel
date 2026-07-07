@@ -86,9 +86,31 @@ async function addUser() {
         return;
     }
 
-    addUserBtn.innerHTML = `GUARDANDO... ⏳`;
+    // Cambiamos el texto para que sepas que está buscando
+    addUserBtn.innerHTML = `VERIFICANDO... 🔍`; 
 
     try {
+        // --- 🛡️ NUEVO: SISTEMA ANTI-DUPLICADOS ---
+        // Hacemos una consulta rápida a Supabase buscando exactamente ese nombre
+        const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${username}&select=username`, {
+            method: 'GET',
+            headers: headers
+        });
+        
+        const existingUsers = await checkResponse.json();
+
+        // Si Supabase nos devuelve al menos 1 resultado, el usuario ya existe
+        if (existingUsers.length > 0) {
+            alert(`⚠️ ¡Alto ahí! El usuario "${username}" ya está registrado en el sistema.`);
+            addUserBtn.innerHTML = `AÑADIR USUARIO <span class="add-icon">👤+</span>`;
+            searchInput.value = ''; // Limpiamos la barra
+            return; // Cortamos la función aquí para bloquear el guardado
+        }
+        // ------------------------------------------
+
+        // Si el código llega hasta aquí, significa que el usuario es nuevo
+        addUserBtn.innerHTML = `GUARDANDO... ⏳`;
+
         const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist`, {
             method: 'POST',
             headers: headers,
@@ -111,6 +133,9 @@ async function addUser() {
         addUserBtn.innerHTML = `AÑADIR USUARIO <span class="add-icon">👤+</span>`;
     }
 }
+
+          
+
 
 // ==========================================
 // 4. FUNCIÓN PARA ELIMINAR USUARIO
