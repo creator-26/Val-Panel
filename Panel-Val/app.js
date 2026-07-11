@@ -19,7 +19,7 @@ const headers = {
 };
 
 // ==========================================
-// 2. FUNCIÓN PARA CARGAR USUARIOS
+// 2. FUNCIÓN PARA CARGAR USUARIOS (ACTUALIZADA)
 // ==========================================
 async function loadUsers() {
     try {
@@ -30,47 +30,115 @@ async function loadUsers() {
 
         const data = await response.json();
         usersContainer.innerHTML = '';
-        totalCount.textContent = data.length;
+        
+        let activos = 0;
+        let pendientes = 0;
 
         data.forEach(user => {
-            const isActive = user.status === 'Activo';
-            
-            // ASIGNACIÓN ESTRICTA DE COLORES POR RANGO (CORREGIDO)
-            let borderClass = 'border-left-purple'; // MEMBER por defecto es Morado
-            let badgeClass = 'member';             // Medalla Morada
-            
-            if (user.role === 'VETERAN') {
-                borderClass = 'border-left-red';   // VETERAN es Rojo
-                badgeClass = 'veteran';            // Medalla Roja
-            } else if (user.role === 'ELITE') {
-                borderClass = 'border-left-cyan';  // ELITE es Cian
-                badgeClass = 'elite';              // Medalla Gris
-            } else if (user.role === 'SUPREMO') {
-                borderClass = 'border-left-gold';  // SUPREMO es Dorado
-                badgeClass = 'supremo';            // Medalla Dorada
+            // Contadores
+            if (user.status === 'Pendiente') {
+                pendientes++;
+            } else {
+                activos++;
             }
 
-            const cardHtml = `
-                <div class="user-card ${borderClass}">
-                    <div class="avatar">
-                        <img src="https://ui-avatars.com/api/?name=${user.username}&background=1A1A1A&color=00E5FF&bold=true" alt="Avatar">
-                        <div class="status-dot ${isActive ? 'green' : 'gray'}"></div>
-                    </div>
-                    <div class="user-info">
-                        <h4>${user.username}</h4>
-                        <div class="badges">
-                            <span class="badge ${badgeClass}">${user.role || 'MEMBER'}</span>
-                            <span class="status-text">Estado: ${user.status || 'Desconocido'}</span>
+            const isActive = user.status === 'Activo';
+            
+            // Si está pendiente, forzamos su diseño a Naranja. Si no, usa sus rangos normales.
+            let borderClass = user.status === 'Pendiente' ? 'border-left-orange' : 'border-left-purple'; 
+            let badgeClass = user.status === 'Pendiente' ? 'pendiente' : 'member';             
+            
+            if (isActive) {
+                if (user.role === 'VETERAN') {
+                    borderClass = 'border-left-red';
+                    badgeClass = 'veteran';
+                } else if (user.role === 'ELITE') {
+                    borderClass = 'border-left-cyan';
+                    badgeClass = 'elite';
+                } else if (user.role === 'SUPREMO') {
+                    borderClass = 'border-left-gold';
+                    badgeClass = 'supremo';
+                }
+            }
+
+            // Diseño de la tarjeta dependiendo del estado
+            let cardHtml = '';
+            
+            if (user.status === 'Pendiente') {
+                // TARJETA DE PENDIENTE (Con botones de aceptar/rechazar)
+                cardHtml = `
+                    <div class="user-card ${borderClass}">
+                        <div class="avatar">
+                            <img src="https://ui-avatars.com/api/?name=${user.username}&background=FFA500&color=000&bold=true" alt="Avatar">
+                            <div class="status-dot orange"></div>
+                        </div>
+                        <div class="user-info">
+                            <h4>${user.username}</h4>
+                            <div class="badges">
+                                <span class="badge ${badgeClass}">NUEVO</span>
+                                <span class="status-text">Solicitando Acceso...</span>
+                            </div>
+                            <div class="action-btns">
+                                <button class="btn-accept" onclick="acceptUser('${user.username}')">✅ ACEPTAR</button>
+                                <button class="btn-reject" onclick="deleteUser('${user.username}')">❌ RECHAZAR</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="delete-btn" onclick="deleteUser('${user.username}')">🗑️</div>
-                </div>
-            `;
+                `;
+            } else {
+                // TARJETA NORMAL (Activos)
+                cardHtml = `
+                    <div class="user-card ${borderClass}">
+                        <div class="avatar">
+                            <img src="https://ui-avatars.com/api/?name=${user.username}&background=1A1A1A&color=00E5FF&bold=true" alt="Avatar">
+                            <div class="status-dot ${isActive ? 'green' : 'gray'}"></div>
+                        </div>
+                        <div class="user-info">
+                            <h4>${user.username}</h4>
+                            <div class="badges">
+                                <span class="badge ${badgeClass}">${user.role || 'MEMBER'}</span>
+                                <span class="status-text">Estado: ${user.status || 'Desconocido'}</span>
+                            </div>
+                        </div>
+                        <div class="delete-btn" onclick="deleteUser('${user.username}')">🗑️</div>
+                    </div>
+                `;
+            }
+            
             usersContainer.innerHTML += cardHtml;
         });
 
+        // Actualizamos los números de arriba en la web
+        totalCount.textContent = activos;
+        pendingCount.textContent = pendientes;
+
     } catch (error) {
         console.error("Error al cargar los usuarios:", error);
+    }
+}
+
+// ==========================================
+// 2.5 FUNCIÓN PARA ACEPTAR USUARIO (NUEVA)
+// ==========================================
+async function acceptUser(username) {
+    try {
+        // Le decimos a Supabase: "Actualiza este usuario y ponlo como Activo"
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${username}`, {
+            method: 'PATCH',
+            headers: headers,
+            body: JSON.stringify({ 
+                status: 'Activo',
+                role: 'MEMBER' // Le damos el rango más bajo por defecto al aceptarlo
+            })
+        });
+
+        if (response.ok) {
+            loadUsers(); // Recarga la lista para que se ponga en verde al instante
+        } else {
+            alert("Hubo un error al intentar aceptar al usuario.");
+        }
+    } catch (error) {
+        console.error("Error al aceptar:", error);
     }
 }
 
