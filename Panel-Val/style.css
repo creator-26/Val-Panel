@@ -426,6 +426,43 @@ body {
 /* Corrección de rangos independientes */
 .border-left-red { border-left: 3px solid #FF3333; } /* Borde rojo SOLO para Veteran */
 .badge.member { background-color: var(--purple-neon); color: white; } /* Medalla morada SOLO para Member */
+/* ==========================================
+   SISTEMA DE PENDIENTES Y BOTONES
+   ========================================== */
+.border-left-orange { border-left: 3px solid #FFA500; } /* Borde naranja para alertas */
+.badge.pendiente { background-color: #FFA500; color: black; font-weight: bold; }
+
+.action-btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.btn-accept {
+    background-color: #00E676;
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.btn-reject {
+    background-color: #FF3333;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.btn-accept:hover { background-color: #00C853; }
+.btn-reject:hover { background-color: #D50000; }
+
 
 
 
