@@ -463,6 +463,117 @@ body {
 .btn-accept:hover { background-color: #00C853; }
 .btn-reject:hover { background-color: #D50000; }
 
+/* ==========================================
+   DISEÑO DEL MODAL DE ELIMINACIÓN
+   ========================================== */
+.custom-modal {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro transparente */
+    backdrop-filter: blur(2px); /* Efecto cristal atrás */
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-modal.show {
+    display: flex; /* Se muestra cuando recibe la orden de JS */
+}
+
+.modal-content {
+    background-color: #121212;
+    border: 1px solid rgba(255, 51, 51, 0.15); /* Brillo rojo muy suave */
+    border-radius: 16px;
+    padding: 25px 20px;
+    width: 320px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #666;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.close-btn:hover { color: #fff; }
+
+.modal-icon {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 15px auto;
+    border-radius: 50%;
+    background-color: rgba(255, 51, 51, 0.08); /* Círculo rojizo transparente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 51, 51, 0.3);
+}
+
+.modal-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.modal-content h3 {
+    color: #ffffff;
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.modal-content p {
+    color: #9e9e9e;
+    font-size: 14px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.btn-cancel {
+    flex: 1;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #333;
+    padding: 12px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-cancel:hover { background-color: #2a2a2a; }
+
+.btn-confirm {
+    flex: 1;
+    background-color: #e53935;
+    color: #ffffff;
+    border: none;
+    padding: 12px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-confirm:hover { background-color: #c62828; }
+
+
 
 
 
