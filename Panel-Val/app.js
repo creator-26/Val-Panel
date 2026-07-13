@@ -206,28 +206,53 @@ async function addUser() {
 
 
 // ==========================================
-// 4. FUNCIÓN PARA ELIMINAR USUARIO
+// SISTEMA DE ELIMINACIÓN (MODAL PERSONALIZADO)
 // ==========================================
-async function deleteUser(username) {
-    const confirmar = confirm(`⚠️ ¿Estás seguro de que quieres eliminar a ${username} del Clan Val?`);
-    
-    if (confirmar) {
-        try {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${username}`, {
-                method: 'DELETE',
-                headers: headers
-            });
+let userToDelete = ""; // Memoria para saber a quién borrar
 
-            if (response.ok) {
-                loadUsers();
-            } else {
-                alert("Error al intentar eliminar el usuario.");
-            }
-        } catch (error) {
-            console.error("Error al eliminar:", error);
-        }
-    }
+// 1. Abre el menú en lugar de borrar instantáneamente
+function deleteUser(username) {
+    userToDelete = username;
+    
+    // Cambiamos el texto para que diga el nombre real de la persona
+    document.getElementById('deleteModalText').innerHTML = `¿Estás seguro que deseas eliminar a <b>${username}</b> de la whitelist?`;
+    
+    // Mostramos la ventana
+    document.getElementById('deleteModal').classList.add('show');
 }
+
+// 2. Función para el botón "Cancelar" o la "X"
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+    userToDelete = "";
+}
+
+// 3. Función para el botón rojo de "Eliminar"
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    if (!userToDelete) return; // Por si acaso hay un error
+
+    try {
+        // Tu código original de Supabase para borrar
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${userToDelete}`, {
+            method: 'DELETE',
+            headers: headers
+        });
+
+        if (response.ok) {
+            loadUsers(); // Recargamos la tabla al instante
+            closeDeleteModal(); // Cerramos el menú
+        } else {
+            alert('Error al intentar eliminar al usuario.');
+        }
+    } catch (error) {
+        console.error("Error en la eliminación:", error);
+    }
+});
+
+ 
+            
+      
+           
 
 // ==========================================
 // 5. ACTIVADORES
