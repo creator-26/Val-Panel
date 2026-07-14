@@ -1,3 +1,21 @@
+/* ==========================================
+   SCROLLBAR PERSONALIZADO (DARK MODE)
+   ========================================== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0a0a0a; 
+}
+::-webkit-scrollbar-thumb {
+    background: #333; 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #e53935; /* El mismo rojo de tus botones */
+}
+
+
 /* =========================================
    VARIABLES GLOBALES (Paleta de Colores)
    ========================================= */
