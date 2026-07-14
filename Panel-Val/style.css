@@ -634,7 +634,7 @@ body {
 .btn-add-main {
     width: 100%;
     background-color: #00E5FF; /* Azul de la imagen */
-    color: white;
+    color: black;
     border: none;
     padding: 16px;
     border-radius: 8px;
