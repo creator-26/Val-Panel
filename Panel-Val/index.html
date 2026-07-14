@@ -125,6 +125,37 @@
             </div>
         </div>
     </div>
+    <!-- ==========================================
+         MODAL PARA AGREGAR JUGADOR
+         ========================================== -->
+    <div id="addModal" class="custom-modal">
+        <div class="modal-content add-modal-content">
+            <span class="close-btn" onclick="closeAddModal()">&times;</span>
+            
+            <div class="modal-header-left">
+                <span class="add-icon-red">👤+</span>
+                <h3>AGREGAR JUGADOR</h3>
+            </div>
+            
+            <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input type="text" id="newUserName" placeholder="Nombre de usuario o ID...">
+            </div>
+
+            <div class="input-wrapper select-wrapper">
+                <select id="newUserRank">
+                    <option value="" disabled selected>Seleccionar rol</option>
+                    <option value="MEMBER">MEMBER</option>
+                    <option value="VETERAN">VETERAN</option>
+                    <option value="ELITE">ELITE</option>
+                    <option value="SUPREMO">SUPREMO 👑</option>
+                </select>
+            </div>
+
+            <button class="btn-confirm-add" id="confirmAddBtn">Agregar a whitelist</button>
+        </div>
+    </div>
+
 
      <script src="app.js"></script>
 </body>
