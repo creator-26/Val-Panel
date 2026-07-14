@@ -250,16 +250,8 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
 });
 
  
-            
-      
+                 
            
-
-// ==========================================
-// 5. ACTIVADORES
-// ==========================================
-addUserBtn.addEventListener('click', addUser);
-loadUsers();
-
 // ==========================================
 // 6. SISTEMA DE LOGIN Y SEGURIDAD
 // ==========================================
@@ -294,5 +286,104 @@ loginBtn.addEventListener('click', () => {
 passInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         loginBtn.click();
+    }
+});
+
+// ==========================================
+// SISTEMA DE BÚSQUEDA EN TIEMPO REAL
+// ==========================================
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const text = e.target.value.toLowerCase();
+    const cards = document.querySelectorAll('.user-card');
+
+    cards.forEach(card => {
+        const username = card.querySelector('h4').innerText.toLowerCase();
+        // Si el nombre incluye lo que escribes, se muestra. Si no, se oculta.
+        if (username.includes(text)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+// ==========================================
+// SISTEMA DE FILTROS POR RANGO
+// ==========================================
+document.getElementById('filterBtn').addEventListener('click', () => {
+    document.getElementById('filterMenu').classList.toggle('show');
+});
+
+// Cierra el menú de filtros si haces clic en otra parte
+window.addEventListener('click', function(e) {
+    if (!document.getElementById('filterBtn').contains(e.target)) {
+        document.getElementById('filterMenu').classList.remove('show');
+    }
+});
+
+function filterByRank(rank) {
+    const cards = document.querySelectorAll('.user-card');
+    
+    cards.forEach(card => {
+        const badgeText = card.querySelector('.badge').innerText;
+        
+        if (rank === 'TODOS') {
+            card.style.display = 'flex';
+        } else if (rank === 'Pendiente') {
+            // Busca la palabra NUEVO en el badge (que es lo que le pusimos a los pendientes)
+            if (badgeText === 'NUEVO') card.style.display = 'flex';
+            else card.style.display = 'none';
+        } else {
+            if (badgeText === rank) card.style.display = 'flex';
+            else card.style.display = 'none';
+        }
+    });
+}
+
+// ==========================================
+// SISTEMA DE AGREGAR USUARIO (NUEVO MODAL)
+// ==========================================
+// 1. Abrir Modal
+document.getElementById('openAddModalBtn').addEventListener('click', () => {
+    document.getElementById('addModal').classList.add('show');
+});
+
+// 2. Cerrar Modal
+function closeAddModal() {
+    document.getElementById('addModal').classList.remove('show');
+    document.getElementById('newUserName').value = ""; // Limpia el texto
+    document.getElementById('newUserRank').value = ""; // Limpia la selección
+}
+
+// 3. Confirmar Agregar
+document.getElementById('confirmAddBtn').addEventListener('click', async () => {
+    const username = document.getElementById('newUserName').value.trim();
+    const rank = document.getElementById('newUserRank').value;
+
+    if (username === "" || rank === "") {
+        alert("Por favor ingresa un nombre y selecciona un rol.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ 
+                username: username, 
+                role: rank,
+                status: 'Activo' // Lo agregas tú, así que entra como Activo directo
+            })
+        });
+
+        if (response.ok) {
+            loadUsers(); // Refresca la lista
+            closeAddModal(); // Cierra la ventana
+            document.getElementById('searchInput').value = ""; // Limpia el buscador
+        } else {
+            alert('Error al añadir. ¿Quizás el usuario ya existe?');
+        }
+    } catch (error) {
+        console.error("Error:", error);
     }
 });
