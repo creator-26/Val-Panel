@@ -5,8 +5,6 @@ const SUPABASE_URL = "https://guqtnlnkbernezblabfs.supabase.co";
 const SUPABASE_KEY = "sb_publishable_OO9dKgyJmzVsm1MEvdNPoA_3ow1L0TP"; 
 
 const searchInput = document.getElementById('searchInput');
-const rankInput = document.getElementById('rankInput');
-const addUserBtn = document.getElementById('addUserBtn');
 const usersContainer = document.getElementById('usersContainer');
 const totalCount = document.getElementById('totalCount');
 const pendingCount = document.getElementById('pendingCount');
@@ -19,7 +17,7 @@ const headers = {
 };
 
 // ==========================================
-// 2. FUNCIÓN PARA CARGAR USUARIOS (ACTUALIZADA)
+// 2. FUNCIÓN PARA CARGAR USUARIOS
 // ==========================================
 async function loadUsers() {
     try {
@@ -30,12 +28,11 @@ async function loadUsers() {
 
         const data = await response.json();
         usersContainer.innerHTML = '';
-        
+
         let activos = 0;
         let pendientes = 0;
 
         data.forEach(user => {
-            // Contadores
             if (user.status === 'Pendiente') {
                 pendientes++;
             } else {
@@ -43,11 +40,9 @@ async function loadUsers() {
             }
 
             const isActive = user.status === 'Activo';
-            
-            // Si está pendiente, forzamos su diseño a Naranja. Si no, usa sus rangos normales.
             let borderClass = user.status === 'Pendiente' ? 'border-left-orange' : 'border-left-purple'; 
             let badgeClass = user.status === 'Pendiente' ? 'pendiente' : 'member';             
-            
+
             if (isActive) {
                 if (user.role === 'VETERAN') {
                     borderClass = 'border-left-red';
@@ -61,11 +56,9 @@ async function loadUsers() {
                 }
             }
 
-            // Diseño de la tarjeta dependiendo del estado
             let cardHtml = '';
-            
+
             if (user.status === 'Pendiente') {
-                // TARJETA DE PENDIENTE (Con botones de aceptar/rechazar)
                 cardHtml = `
                     <div class="user-card ${borderClass}">
                         <div class="avatar">
@@ -86,7 +79,6 @@ async function loadUsers() {
                     </div>
                 `;
             } else {
-                // TARJETA NORMAL (Activos)
                 cardHtml = `
                     <div class="user-card ${borderClass}">
                         <div class="avatar">
@@ -104,11 +96,9 @@ async function loadUsers() {
                     </div>
                 `;
             }
-            
             usersContainer.innerHTML += cardHtml;
         });
 
-        // Actualizamos los números de arriba en la web
         totalCount.textContent = activos;
         pendingCount.textContent = pendientes;
 
@@ -118,22 +108,21 @@ async function loadUsers() {
 }
 
 // ==========================================
-// 2.5 FUNCIÓN PARA ACEPTAR USUARIO (NUEVA)
+// 3. FUNCIÓN PARA ACEPTAR USUARIO PENDIENTE
 // ==========================================
 async function acceptUser(username) {
     try {
-        // Le decimos a Supabase: "Actualiza este usuario y ponlo como Activo"
         const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${username}`, {
             method: 'PATCH',
             headers: headers,
             body: JSON.stringify({ 
                 status: 'Activo',
-                role: 'MEMBER' // Le damos el rango más bajo por defecto al aceptarlo
+                role: 'MEMBER' 
             })
         });
 
         if (response.ok) {
-            loadUsers(); // Recarga la lista para que se ponga en verde al instante
+            loadUsers(); 
         } else {
             alert("Hubo un error al intentar aceptar al usuario.");
         }
@@ -143,104 +132,33 @@ async function acceptUser(username) {
 }
 
 // ==========================================
-// 3. FUNCIÓN PARA AÑADIR UN NUEVO USUARIO
+// 4. SISTEMA DE ELIMINACIÓN (MODAL)
 // ==========================================
-async function addUser() {
-    const username = searchInput.value.trim();
-    const selectedRole = rankInput.value;
+let userToDelete = "";
 
-    if (username === '') {
-        alert("¡Debes escribir un nombre de usuario!");
-        return;
-    }
-
-    // Cambiamos el texto para que sepas que está buscando
-    addUserBtn.innerHTML = `VERIFICANDO... 🔍`; 
-
-    try {
-        // --- 🛡️ NUEVO: SISTEMA ANTI-DUPLICADOS ---
-        // Hacemos una consulta rápida a Supabase buscando exactamente ese nombre
-        const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${username}&select=username`, {
-            method: 'GET',
-            headers: headers
-        });
-        
-        const existingUsers = await checkResponse.json();
-
-        // Si Supabase nos devuelve al menos 1 resultado, el usuario ya existe
-        if (existingUsers.length > 0) {
-            alert(`⚠️ ¡Alto ahí! El usuario "${username}" ya está registrado en el sistema.`);
-            addUserBtn.innerHTML = `AÑADIR USUARIO <span class="add-icon">👤+</span>`;
-            searchInput.value = ''; // Limpiamos la barra
-            return; // Cortamos la función aquí para bloquear el guardado
-        }
-        // ------------------------------------------
-
-        // Si el código llega hasta aquí, significa que el usuario es nuevo
-        addUserBtn.innerHTML = `GUARDANDO... ⏳`;
-
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist`, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({
-                username: username,
-                role: selectedRole,
-                status: 'Activo'
-            })
-        });
-
-        if (response.ok) {
-            searchInput.value = ''; 
-            loadUsers();            
-        } else {
-            alert("Hubo un error al guardar en la base de datos.");
-        }
-    } catch (error) {
-        console.error("Error al guardar:", error);
-    } finally {
-        addUserBtn.innerHTML = `AÑADIR USUARIO <span class="add-icon">👤+</span>`;
-    }
-}
-
-          
-
-
-// ==========================================
-// SISTEMA DE ELIMINACIÓN (MODAL PERSONALIZADO)
-// ==========================================
-let userToDelete = ""; // Memoria para saber a quién borrar
-
-// 1. Abre el menú en lugar de borrar instantáneamente
 function deleteUser(username) {
     userToDelete = username;
-    
-    // Cambiamos el texto para que diga el nombre real de la persona
     document.getElementById('deleteModalText').innerHTML = `¿Estás seguro que deseas eliminar a <b>${username}</b> de la whitelist?`;
-    
-    // Mostramos la ventana
     document.getElementById('deleteModal').classList.add('show');
 }
 
-// 2. Función para el botón "Cancelar" o la "X"
 function closeDeleteModal() {
     document.getElementById('deleteModal').classList.remove('show');
     userToDelete = "";
 }
 
-// 3. Función para el botón rojo de "Eliminar"
 document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-    if (!userToDelete) return; // Por si acaso hay un error
+    if (!userToDelete) return; 
 
     try {
-        // Tu código original de Supabase para borrar
         const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${userToDelete}`, {
             method: 'DELETE',
             headers: headers
         });
 
         if (response.ok) {
-            loadUsers(); // Recargamos la tabla al instante
-            closeDeleteModal(); // Cerramos el menú
+            loadUsers(); 
+            closeDeleteModal(); 
         } else {
             alert('Error al intentar eliminar al usuario.');
         }
@@ -249,11 +167,123 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
     }
 });
 
- 
-                 
-           
 // ==========================================
-// 6. SISTEMA DE LOGIN Y SEGURIDAD
+// 5. SISTEMA DE BÚSQUEDA EN TIEMPO REAL
+// ==========================================
+searchInput.addEventListener('input', function(e) {
+    const text = e.target.value.toLowerCase();
+    const cards = document.querySelectorAll('.user-card');
+
+    cards.forEach(card => {
+        const username = card.querySelector('h4').innerText.toLowerCase();
+        if (username.includes(text)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+// ==========================================
+// 6. SISTEMA DE FILTROS POR RANGO
+// ==========================================
+document.getElementById('filterBtn').addEventListener('click', () => {
+    document.getElementById('filterMenu').classList.toggle('show');
+});
+
+window.addEventListener('click', function(e) {
+    if (!document.getElementById('filterBtn').contains(e.target)) {
+        document.getElementById('filterMenu').classList.remove('show');
+    }
+});
+
+function filterByRank(rank) {
+    const cards = document.querySelectorAll('.user-card');
+    
+    cards.forEach(card => {
+        const badgeText = card.querySelector('.badge').innerText;
+        
+        if (rank === 'TODOS') {
+            card.style.display = 'flex';
+        } else if (rank === 'Pendiente') {
+            if (badgeText === 'NUEVO') card.style.display = 'flex';
+            else card.style.display = 'none';
+        } else {
+            if (badgeText === rank) card.style.display = 'flex';
+            else card.style.display = 'none';
+        }
+    });
+}
+
+// ==========================================
+// 7. SISTEMA DE AGREGAR USUARIO (MODAL)
+// ==========================================
+document.getElementById('openAddModalBtn').addEventListener('click', () => {
+    document.getElementById('addModal').classList.add('show');
+});
+
+function closeAddModal() {
+    document.getElementById('addModal').classList.remove('show');
+    document.getElementById('newUserName').value = ""; 
+    document.getElementById('newUserRank').value = ""; 
+}
+
+document.getElementById('confirmAddBtn').addEventListener('click', async () => {
+    const username = document.getElementById('newUserName').value.trim();
+    const rank = document.getElementById('newUserRank').value;
+
+    if (username === "" || rank === "") {
+        alert("Por favor ingresa un nombre y selecciona un rol.");
+        return;
+    }
+
+    // Botón en estado de carga
+    const confirmBtn = document.getElementById('confirmAddBtn');
+    confirmBtn.innerText = "Verificando...";
+
+    try {
+        // Anti-Duplicados
+        const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/whitelist?username=eq.${username}&select=username`, {
+            method: 'GET',
+            headers: headers
+        });
+
+        const existingUsers = await checkResponse.json();
+
+        if (existingUsers.length > 0) {
+            alert(`⚠️ El usuario "${username}" ya está en la base de datos.`);
+            confirmBtn.innerText = "Agregar a whitelist";
+            return; 
+        }
+
+        confirmBtn.innerText = "Guardando...";
+
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ 
+                username: username, 
+                role: rank,
+                status: 'Activo' 
+            })
+        });
+
+        if (response.ok) {
+            loadUsers(); 
+            closeAddModal(); 
+            searchInput.value = ""; 
+        } else {
+            alert('Error al añadir a la base de datos.');
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    } finally {
+        confirmBtn.innerText = "Agregar a whitelist";
+    }
+});
+
+// ==========================================
+// 8. SISTEMA DE LOGIN Y SEGURIDAD
 // ==========================================
 const loginScreen = document.getElementById('loginScreen');
 const mainContent = document.getElementById('mainContent');
@@ -267,6 +297,9 @@ function grantAccess() {
     mainContent.style.display = 'block';
     navMenu.style.display = 'flex';
     topHeader.style.display = 'flex';
+    
+    // Carga los usuarios SOLO cuando se concede el acceso
+    loadUsers();
 }
 
 if (sessionStorage.getItem('accesoClanVal') === 'concedido') {
@@ -286,104 +319,5 @@ loginBtn.addEventListener('click', () => {
 passInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         loginBtn.click();
-    }
-});
-
-// ==========================================
-// SISTEMA DE BÚSQUEDA EN TIEMPO REAL
-// ==========================================
-document.getElementById('searchInput').addEventListener('input', function(e) {
-    const text = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.user-card');
-
-    cards.forEach(card => {
-        const username = card.querySelector('h4').innerText.toLowerCase();
-        // Si el nombre incluye lo que escribes, se muestra. Si no, se oculta.
-        if (username.includes(text)) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-});
-
-// ==========================================
-// SISTEMA DE FILTROS POR RANGO
-// ==========================================
-document.getElementById('filterBtn').addEventListener('click', () => {
-    document.getElementById('filterMenu').classList.toggle('show');
-});
-
-// Cierra el menú de filtros si haces clic en otra parte
-window.addEventListener('click', function(e) {
-    if (!document.getElementById('filterBtn').contains(e.target)) {
-        document.getElementById('filterMenu').classList.remove('show');
-    }
-});
-
-function filterByRank(rank) {
-    const cards = document.querySelectorAll('.user-card');
-    
-    cards.forEach(card => {
-        const badgeText = card.querySelector('.badge').innerText;
-        
-        if (rank === 'TODOS') {
-            card.style.display = 'flex';
-        } else if (rank === 'Pendiente') {
-            // Busca la palabra NUEVO en el badge (que es lo que le pusimos a los pendientes)
-            if (badgeText === 'NUEVO') card.style.display = 'flex';
-            else card.style.display = 'none';
-        } else {
-            if (badgeText === rank) card.style.display = 'flex';
-            else card.style.display = 'none';
-        }
-    });
-}
-
-// ==========================================
-// SISTEMA DE AGREGAR USUARIO (NUEVO MODAL)
-// ==========================================
-// 1. Abrir Modal
-document.getElementById('openAddModalBtn').addEventListener('click', () => {
-    document.getElementById('addModal').classList.add('show');
-});
-
-// 2. Cerrar Modal
-function closeAddModal() {
-    document.getElementById('addModal').classList.remove('show');
-    document.getElementById('newUserName').value = ""; // Limpia el texto
-    document.getElementById('newUserRank').value = ""; // Limpia la selección
-}
-
-// 3. Confirmar Agregar
-document.getElementById('confirmAddBtn').addEventListener('click', async () => {
-    const username = document.getElementById('newUserName').value.trim();
-    const rank = document.getElementById('newUserRank').value;
-
-    if (username === "" || rank === "") {
-        alert("Por favor ingresa un nombre y selecciona un rol.");
-        return;
-    }
-
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/whitelist`, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({ 
-                username: username, 
-                role: rank,
-                status: 'Activo' // Lo agregas tú, así que entra como Activo directo
-            })
-        });
-
-        if (response.ok) {
-            loadUsers(); // Refresca la lista
-            closeAddModal(); // Cierra la ventana
-            document.getElementById('searchInput').value = ""; // Limpia el buscador
-        } else {
-            alert('Error al añadir. ¿Quizás el usuario ya existe?');
-        }
-    } catch (error) {
-        console.error("Error:", error);
     }
 });
