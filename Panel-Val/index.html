@@ -34,25 +34,36 @@
             <h2>Gestión de Whitelist</h2>
         </div>
 
-        <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Buscar usuario...">
+                <!-- NUEVA BARRA DE BÚSQUEDA Y FILTROS -->
+        <div class="search-filter-container">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar miembro...">
+            </div>
+            
+            <div class="filter-dropdown">
+                <button id="filterBtn" class="btn-filter">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    Filtros
+                </button>
+                <div id="filterMenu" class="filter-menu">
+                    <div class="filter-option" onclick="filterByRank('TODOS')">TODOS</div>
+                    <div class="filter-option" onclick="filterByRank('MEMBER')">MEMBER</div>
+                    <div class="filter-option" onclick="filterByRank('VETERAN')">VETERAN</div>
+                    <div class="filter-option" onclick="filterByRank('ELITE')">ELITE</div>
+                    <div class="filter-option" onclick="filterByRank('SUPREMO')">SUPREMO</div>
+                    <div class="filter-option" onclick="filterByRank('Pendiente')">PENDIENTES</div>
+                </div>
+            </div>
         </div>
 
-        <div class="rank-selector">
-            <label for="rankInput">RANGO:</label>
-            <select id="rankInput">
-                <option value="MEMBER">MEMBER</option>
-                <option value="VETERAN">VETERAN</option>
-                <option value="ELITE">ELITE</option>
-                <option value="SUPREMO" selected>SUPREMO 👑</option>
-            </select>
-        </div>
-
-        <button id="addUserBtn" class="btn-cyan">
-            AÑADIR USUARIO <span class="add-icon">👤+</span>
+        <!-- BOTÓN GRANDE PARA AGREGAR -->
+        <button id="openAddModalBtn" class="btn-add-main">
+            + AÑADIR USUARIO 👤
         </button>
+ 
 
+        
         <div class="stats-grid">
             <div class="stat-card border-cyan">
                 <p>TOTAL MIEMBROS</p>
