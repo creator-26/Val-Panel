@@ -728,6 +728,32 @@ body {
 }
 .btn-confirm-add:hover { background-color: #c62828; }
 
+/* ==========================================
+   ÍCONOS DE DISPOSITIVOS (MÓVIL / PC)
+   ========================================== */
+.username-flex {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el nombre y el ícono */
+}
+
+.device-svg {
+    width: 16px;
+    height: 16px;
+    color: #888; /* Gris sutil para que no distraiga mucho */
+    transition: color 0.3s ease;
+}
+
+.device-svg:hover {
+    color: #00E5FF; /* Brilla en cyan al pasar el mouse */
+}
+
+.device-unknown {
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+
 
 
 
