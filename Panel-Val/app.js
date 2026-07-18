@@ -56,17 +56,31 @@ async function loadUsers() {
                 }
             }
 
+        
+// -----------------------------------------------------
+            // NUEVO: Detectar el dispositivo para asignarle un Ícono SVG
+            // -----------------------------------------------------
+            let deviceIcon = '';
+            if (user.device === 'Movil') {
+                deviceIcon = `<svg class="device-svg mobile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Jugando en Celular"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>`;
+            } else if (user.device === 'PC') {
+                deviceIcon = `<svg class="device-svg pc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Jugando en PC"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`;
+            } else {
+                // Si no hay dato registrado aún (jugadores antiguos), muestra un signo de interrogación pequeño
+                deviceIcon = `<span class="device-unknown" title="Dispositivo Desconocido">❓</span>`;
+            }
+
             let cardHtml = '';
 
             if (user.status === 'Pendiente') {
                 cardHtml = `
                     <div class="user-card ${borderClass}">
                         <div class="avatar">
-                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=${user.username}&backgroundColor=FFA500" alt="Avatar">
+                            <img src="https://ui-avatars.com/api/?name=${user.username}&background=FFA500&color=000&bold=true" alt="Avatar">
                             <div class="status-dot orange"></div>
                         </div>
                         <div class="user-info">
-                            <h4>${user.username}</h4>
+                            <h4 class="username-flex">${user.username} ${deviceIcon}</h4>
                             <div class="badges">
                                 <span class="badge ${badgeClass}">NUEVO</span>
                                 <span class="status-text">Solicitando Acceso...</span>
@@ -82,28 +96,31 @@ async function loadUsers() {
                 cardHtml = `
                     <div class="user-card ${borderClass}">
                         <div class="avatar">
-                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=${user.username}&backgroundColor=transparent" alt="Avatar">
+                            <img src="https://ui-avatars.com/api/?name=${user.username}&background=1A1A1A&color=00E5FF&bold=true" alt="Avatar">
                             <div class="status-dot ${isActive ? 'green' : 'gray'}"></div>
                         </div>
                         <div class="user-info">
-                            <h4>${user.username}</h4>
+                            <h4 class="username-flex">${user.username} ${deviceIcon}</h4>
                             <div class="badges">
                                 <span class="badge ${badgeClass}">${user.role || 'MEMBER'}</span>
                                 <span class="status-text">Estado: ${user.status || 'Desconocido'}</span>
                             </div>
                         </div>
-                        <div class="delete-btn" onclick="deleteUser('${user.username}')" title="Eliminar Jugador">
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6"></polyline>
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-        <line x1="10" y1="11" x2="10" y2="17"></line>
-        <line x1="14" y1="11" x2="14" y2="17"></line>
-    </svg>
-</div>
-
+                        <!-- Aquí va la nueva basurita premium que ya pusiste -->
+                        <div class="delete-btn" onclick="deleteUser('${user.username}')" title="Eliminar">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </div>
                     </div>
                 `;
             }
+              
+                            
+     
             usersContainer.innerHTML += cardHtml;
         });
 
