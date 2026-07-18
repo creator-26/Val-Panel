@@ -734,8 +734,15 @@ body {
 .username-flex {
     display: flex;
     align-items: center;
-    gap: 8px; /* Espacio entre el nombre y el ícono */
+    gap: 8px;
+    
+    /* Reglas de protección contra nombres largos */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Pone un límite de ancho */
 }
+
 
 .device-svg {
     width: 16px;
