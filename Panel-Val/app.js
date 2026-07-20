@@ -76,7 +76,8 @@ async function loadUsers() {
                 cardHtml = `
                     <div class="user-card ${borderClass}">
                         <div class="avatar">
-                            <img src="https://ui-avatars.com/api/?name=${user.username}&background=FFA500&color=000&bold=true" alt="Avatar">
+                            <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=${user.username}&backgroundColor=FFA500" alt="Avatar">
+
                             <div class="status-dot orange"></div>
                         </div>
                         <div class="user-info">
